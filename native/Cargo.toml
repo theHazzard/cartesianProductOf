@@ -1,0 +1,16 @@
+[package]
+name = "cartesian-product-of"
+version = "0.1.0"
+authors = ["hazzard <thehazzard@gmail.com>"]
+license = "MIT"
+build = "build.rs"
+
+[lib]
+name = "cartesian_product_of"
+crate-type = ["dylib"]
+
+[build-dependencies]
+neon-build = "0.1.22"
+
+[dependencies]
+neon = "0.1.22"
