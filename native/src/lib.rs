@@ -1,42 +1,35 @@
 #[macro_use]
 extern crate neon;
 
-use neon::mem::{Handle};
-use neon::scope::Scope;
+use std::ops::DerefMut;
+use neon::mem::Handle;
 use neon::vm::{Call, JsResult};
-use neon::js::{JsString, JsArray, Object, JsObject};
+use neon::js::{JsArray, Object, Value, JsValue};
 
-fn jsarray_as_vector<'a, T: Scope<'a>> (scope: &mut T, jarray: &JsArray) -> Vec<JsObject> {
-    let vector: Vec<Handle<JsObject>> = Vec::new();
 
-    for elem in 0..jarray.len() {
-        let newElem: JsObject = jarray.get(scope, elem).unwrap().deref();
-        vector.push(newElem);
-    }
-    vector
-}
-
-fn cartesian_product_of(call: Call) -> JsResult<JsString> {
+fn cartesian_product_of(call: Call) -> JsResult<JsValue> {
     let scope = call.scope;
-    let raw_args = call.arguments;
-    let args_len = raw_args.len();
+    let args = call.arguments;
+    let args_len = args.len();
+    let mut arguments = Vec::new();
+    let mut accumulator: Vec<Vec<JsValue>> = Vec::new();
+    accumulator.push(Vec::new());
 
-    let mut result:Vec<Vec<JsArray>> = Vec::new();
-    result.push(Vec::new());
-
-    for i in 0..args_len {
-        let mut result: Vec<Vec<JsArray>> = Vec::new();
-        for _elem in result.iter() {
-            let arg_elements: Handle<JsArray> = raw_args.get(scope, i).unwrap();
-
-            for l in 0..arg_elements.len() {
-                let item_elem = arg_elements.get(scope, l).unwrap().check::<JsArray>().unwrap();
-
-                let arr = jsarray_as_vector(scope, &item_elem);
-            }
-        }
+    for index in 0..args_len {
+        let a = args.get(scope, index).unwrap().check::<JsArray>()?;
+        arguments.push(a);
     }
-    Ok(JsString::new(scope, "Hola").unwrap())
+
+    let results = match arguments.split_first() {
+        Some((first, rest)) => {
+            
+        },
+        None => {
+            vec![]
+        }
+    };
+
+    Ok(finalArray.as_value(scope))
 }
 
 register_module!(m, {
